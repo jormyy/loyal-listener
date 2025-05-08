@@ -13,3 +13,6 @@ Alternatively, you could use the code in the repository and run the application 
 4. Create a file called .env and create variables, ```CLIENT_ID``` and ```CLIENT_SECRET```, and set them equal to the client id and client secret that is provided by your app.
 5. Type ```pip install -r requirements.txt``` in your working directory.
 6. Run main.py on your local device.
+
+## Video Demo
+https://github.com/user-attachments/assets/af64282c-62a7-4897-843a-491225b31e8c
