@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html>
-    <header>
+    <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
         crossorigin="anonymous"/>
+        <link rel="stylesheet" href="../styles/styles4.css"/>
         <title>Loyal Listener</title>
-    </header>
+    </head>
     <body>
-        <p>Playlist made!</p>
-        <!-- <div>
-            {% for i in hello %}
-                {% if "Remix" not in i["name"] %}
-                    <div class="no_remix">{{ i["name"] }}</div><br>
-                {% else %}
-                    <div class="remix">{{ i["name"] }}</div><br>
-                {% endif %}
-
-            {% endfor %}
-        </div> -->
+        <div class="confetti-container">
+            </div>
+        <div class="message-container">
+            <p class="celebration-message">Playlist made!</p>
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-        <script rc="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+        <script>
+            // JavaScript to generate and animate confetti
+            document.addEventListener('DOMContentLoaded', () => {
+                const confettiContainer = document.querySelector('.confetti-container');
+                const numberOfConfetti = 100; // Adjust for more or less confetti
+
+                for (let i = 0; i < numberOfConfetti; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = Math.random() * 100 + 'vw'; // Random horizontal position
+                    confetti.style.animationDelay = Math.random() * 2 + 's'; // Random delay
+                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
+                    confettiContainer.appendChild(confetti);
+                }
+            });
+        </script>
     </body>
 </html>

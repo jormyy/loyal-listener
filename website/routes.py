@@ -16,7 +16,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 # urls
 AUTH_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
-REDIRECT_URI = "http://localhost:5000/callback"
+REDIRECT_URI = "http://127.0.0.1:5000/callback"
 
 SCOPES = "user-library-read,playlist-modify-public"
 

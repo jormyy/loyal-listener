@@ -1,0 +1,55 @@
+/* styles4.css */
+
+body {
+    margin: 0;
+    overflow: hidden; /* Hide scrollbars caused by confetti */
+    background-color: #f0f0f0; /* Light background */
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    position: relative; /* Needed for absolute positioning of confetti */
+}
+
+.message-container {
+    text-align: center;
+    z-index: 1; /* Ensure message is above confetti */
+}
+
+.celebration-message {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allow clicks through confetti */
+    overflow: hidden; /* Prevent confetti from overflowing */
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #ff0; /* Default color, will be overridden by JS */
+    animation: fall linear infinite;
+    opacity: 0.8;
+}
+
+/* Keyframes for the falling animation */
+@keyframes fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
