@@ -330,7 +330,6 @@ export default function App() {
           <h1 style={styles.welcomeTitle}>Welcome, {userProfile.display_name}!</h1>
 
           <div style={styles.searchSection}>
-            <h2 style={styles.searchTitle}>Search Artists</h2>
             <div style={styles.searchInputContainer}>
               <input
                 type="text"
