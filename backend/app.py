@@ -57,7 +57,7 @@ def songs(album_id="1Flt7AQr1HDhdWuZVF26d4"):
 
 def create_playlist(user_token, user_id, artist_name):
     try:
-        # create new spotify client w user token
+        # Create a new Spotify client with user token
         user_sp = spotipy.Spotify(auth=user_token)
         playlist_name = f"{artist_name} enthusiast"
         playlist = user_sp.user_playlist_create(
@@ -73,16 +73,20 @@ def create_playlist(user_token, user_id, artist_name):
 
 def get_all_artist_songs(artist_id):
     try:
+        # Get all albums for the artist
         albums_result = sp.artist_albums(artist_id=artist_id, album_type="album,single", limit=50)["items"]
         
         all_track_ids = []
         
+        # Get tracks from each album
         for album in albums_result:
             tracks = sp.album_tracks(album_id=album["id"], limit=50)["items"]
             for track in tracks:
+                # Only add tracks where the artist is the main artist (to avoid features)
                 if any(artist["id"] == artist_id for artist in track["artists"]):
                     all_track_ids.append(track["id"])
         
+        # Remove duplicates (same song might be on multiple albums/singles)
         unique_track_ids = list(set(all_track_ids))
         
         return unique_track_ids
@@ -93,6 +97,7 @@ def add_songs_to_playlist(user_token, playlist_id, track_ids):
     try:
         user_sp = spotipy.Spotify(auth=user_token)
         
+        # Spotify allows max 100 tracks per request
         for i in range(0, len(track_ids), 100):
             batch = track_ids[i:i+100]
             user_sp.playlist_add_items(playlist_id, batch)
@@ -135,14 +140,17 @@ def api_create_playlist():
     if not user_token or not user_id or not artist_name or not artist_id:
         return jsonify({"error": "user_token, user_id, artist_name and artist_id are required"}), 400
     
+    # Create the playlist
     playlist_result = create_playlist(user_token, user_id, artist_name)
     if "error" in playlist_result:
         return jsonify(playlist_result), 500
     
+    # Get all songs from the artist
     track_ids = get_all_artist_songs(artist_id)
     if isinstance(track_ids, dict) and "error" in track_ids:
         return jsonify(track_ids), 500
     
+    # Add songs to the playlist
     if track_ids:
         add_result = add_songs_to_playlist(user_token, playlist_result["id"], track_ids)
         if "error" in add_result:
