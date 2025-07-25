@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const styles = {
-  // login
+  // Login page styles
   loginContainer: {
     display: 'flex', 
     flexDirection: 'column', 
@@ -43,7 +43,7 @@ const styles = {
     transition: 'transform 0.2s ease'
   },
 
-  // main app
+  // Main app styles
   mainContainer: {
     fontFamily: 'Arial, sans-serif',
     minHeight: '100vh',
@@ -150,8 +150,7 @@ const styles = {
     marginBottom: '10px'
   },
   artistName: {
-    margin: '10px 0',
-    color: '#000000'
+    margin: '10px 0'
   },
   loadingOverlay: {
     position: 'absolute',
@@ -207,9 +206,9 @@ export default function App() {
     return () => document.head.removeChild(style);
   }, []);
 
-  // spotify oauth
+  // spotify oauth config
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const redirectUri = 'https://loyal-listener-f6fice8j8-jeremy-has-projects.vercel.app';
+  const redirectUri = import.meta.env.VITE_REDIRECT_URI || 'http://localhost:5173';
   const scopes = 'user-read-private user-read-email playlist-modify-public';
 
   const backendUrl = 'http://127.0.0.1:5000';
@@ -276,7 +275,7 @@ export default function App() {
   };
 
   const createPlaylist = async (artistName, artistId) => {
-    setCreatingPlaylist(artistId); // Set loading state for this specific artist
+    setCreatingPlaylist(artistId);
     
     try {
       const response = await fetch(`${backendUrl}/api/create_playlist`, {
@@ -307,7 +306,7 @@ export default function App() {
     }
   };
 
-  // logged-in state
+  // when user is logged in
   if (accessToken && userProfile) {
     return (
       <div style={styles.mainContainer}>
