@@ -213,6 +213,8 @@ export default function App() {
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+  console.log(backendUrl);
+
   // check for access token in url
   useEffect(() => {
     const hash = window.location.hash;
