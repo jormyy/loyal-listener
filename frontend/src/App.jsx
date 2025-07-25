@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const styles = {
-  // Login page styles
+  // login page styles
   loginContainer: {
     display: 'flex', 
     flexDirection: 'column', 
@@ -43,7 +43,7 @@ const styles = {
     transition: 'transform 0.2s ease'
   },
 
-  // Main app styles
+  // main app styles
   mainContainer: {
     fontFamily: 'Arial, sans-serif',
     minHeight: '100vh',
@@ -208,10 +208,10 @@ export default function App() {
 
   // spotify oauth config
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const redirectUri = import.meta.env.VITE_REDIRECT_URI || 'http://localhost:5173';
+  const redirectUri = import.meta.env.VITE_REDIRECT_URI;
   const scopes = 'user-read-private user-read-email playlist-modify-public';
 
-  const backendUrl = 'http://127.0.0.1:5000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   // check for access token in url
   useEffect(() => {
