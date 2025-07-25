@@ -38,7 +38,7 @@ Loyal Listener is a web application that allows users to instantly create compre
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/loyal-listener.git
+git clone https://github.com/jormyy/loyal-listener.git
 cd loyal-listener
 ```
 
