@@ -150,7 +150,8 @@ const styles = {
     marginBottom: '10px'
   },
   artistName: {
-    margin: '10px 0'
+    margin: '10px 0',
+    color: '#000000'
   },
   loadingOverlay: {
     position: 'absolute',
