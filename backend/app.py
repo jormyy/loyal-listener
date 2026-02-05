@@ -8,10 +8,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["https://loyal-listener.vercel.app"])
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+app.config.update(
+    SESSION_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_SECURE=True,
+    SECRET_KEY=SECRET_KEY
+)
 
 client_credentials_manager = SpotifyClientCredentials(
     client_id=CLIENT_ID,
