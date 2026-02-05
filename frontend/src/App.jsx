@@ -277,6 +277,11 @@ export default function App() {
     };
 
     const createPlaylist = async (artistName, artistId) => {
+        if (!userProfile || !userProfile.id) {
+            alert("User profile not loaded. Please try logging in again.");
+            return;
+        }
+        
         setCreatingPlaylist(artistId);
         
         try {
