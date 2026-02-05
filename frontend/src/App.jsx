@@ -220,9 +220,12 @@ export default function App() {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
+        
         if (code) {
             setAccessToken(code);
+            // Clear the code from the URL so it looks clean
             window.history.replaceState({}, document.title, "/");
+            // Immediately fetch the profile to get the user_id
             fetchUserProfile(code);
         }
     }, []);
@@ -281,7 +284,7 @@ export default function App() {
             alert("User profile not loaded. Please try logging in again.");
             return;
         }
-        
+
         setCreatingPlaylist(artistId);
         
         try {
