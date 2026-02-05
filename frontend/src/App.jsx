@@ -261,7 +261,9 @@ export default function App() {
         
         setLoading(true);
         try {
-            const response = await fetch(`${backendUrl}/api/artist_search?artist_name=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`${backendUrl}/api/artist_search?artist_name=${encodeURIComponent(searchQuery)}`, {
+                credentials: 'include'
+            });
             const data = await response.json();
             
             if (data.error) {
@@ -283,6 +285,7 @@ export default function App() {
         try {
             const response = await fetch(`${backendUrl}/api/create_playlist`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
