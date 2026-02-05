@@ -108,6 +108,7 @@ def get_profile():
 
     try:
         # Exchange code for token
+        print(f"DEBUG: Attempting swap with Redirect URI: {REDIRECT_URI}")
         token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
         access_token = token_info['access_token']
         
