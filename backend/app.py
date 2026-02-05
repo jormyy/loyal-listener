@@ -132,7 +132,7 @@ def api_songs():
     album_id = request.args.get('album_id', '1Flt7AQr1HDhdWuZVF26d4')
     return jsonify(songs(album_id))
 
-@app.route('/api/create_playlist', methods=['POST'])
+@app.route('/api/create_playlist', methods=['POST', 'OPTIONS'])
 def api_create_playlist():
     data = request.get_json()
     
