@@ -102,7 +102,7 @@ def get_profile():
     sp_oauth = SpotifyOAuth(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
-        redirect_uri=REDIRECT_URI,
+        redirect_uri="https://loyal-listener.vercel.app/callback",
         scope="user-read-private user-read-email playlist-modify-public"
     )
 

@@ -212,8 +212,6 @@ export default function App() {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const scopes = 'user-read-private user-read-email playlist-modify-public';
 
-    const hasFetched = useRef(false);
-
     const fetchUserProfileFromBackend = useCallback(async (code) => {
         try {
             const response = await fetch(`${backendUrl}/api/get_profile`, {
@@ -234,6 +232,8 @@ export default function App() {
         }
     }, [backendUrl]);
 
+    const hasFetched = useRef(false);
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
@@ -241,8 +241,8 @@ export default function App() {
         if (code && !accessToken && !hasFetched.current) {
             hasFetched.current = true; // Lock it!
             setAccessToken(code);
-            window.history.replaceState({}, document.title, "/"); 
             fetchUserProfileFromBackend(code);
+            window.history.replaceState({}, document.title, "/"); 
         }
     }, [accessToken, fetchUserProfileFromBackend]);
 
