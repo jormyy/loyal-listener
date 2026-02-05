@@ -214,23 +214,6 @@ export default function App() {
 
     const hasFetched = useRef(false);
 
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        
-        if (code && !accessToken && !hasFetched.current) {
-            hasFetched.current = true; // Lock it!
-            setAccessToken(code);
-            window.history.replaceState({}, document.title, "/"); 
-            fetchUserProfileFromBackend(code);
-        }
-    }, [accessToken, fetchUserProfileFromBackend]);
-
-        const handleLogin = () => {
-            const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
-            window.location.href = authUrl;
-        };
-
     const fetchUserProfileFromBackend = useCallback(async (code) => {
         try {
             const response = await fetch(`${backendUrl}/api/get_profile`, {
@@ -250,6 +233,23 @@ export default function App() {
             console.error('Error connecting to backend for profile:', error);
         }
     }, [backendUrl]);
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code && !accessToken && !hasFetched.current) {
+            hasFetched.current = true; // Lock it!
+            setAccessToken(code);
+            window.history.replaceState({}, document.title, "/"); 
+            fetchUserProfileFromBackend(code);
+        }
+    }, [accessToken, fetchUserProfileFromBackend]);
+
+        const handleLogin = () => {
+            const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+            window.location.href = authUrl;
+        };
 
     const handleLogout = () => {
         setAccessToken(null);
