@@ -207,44 +207,45 @@ export default function App() {
         return () => document.head.removeChild(style);
     }, []);
 
-    // spotify oauth config
     const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
     const redirectUri = import.meta.env.VITE_REDIRECT_URI;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const scopes = 'user-read-private user-read-email playlist-modify-public';
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-    console.log(backendUrl);
-
-    // check for access token in url
+    // 1. Capture Auth Code and fetch profile from BACKEND
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         
-        if (code) {
+        if (code && !accessToken) {
             setAccessToken(code);
-            // Clear the code from the URL so it looks clean
-            window.history.replaceState({}, document.title, "/");
-            // Immediately fetch the profile to get the user_id
-            fetchUserProfile(code);
+            window.history.replaceState({}, document.title, "/"); 
+            fetchUserProfileFromBackend(code);
         }
-    }, []);
+    }, [accessToken]);
 
     const handleLogin = () => {
         const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
         window.location.href = authUrl;
     };
-    const fetchUserProfile = async (token) => {
+
+    const fetchUserProfileFromBackend = async (code) => {
         try {
-            const response = await fetch('https://api.spotify.com/v1/me', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+            const response = await fetch(`${backendUrl}/api/get_profile`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
             });
             const userData = await response.json();
-            setUserProfile(userData);
+            
+            if (userData.error) {
+                console.error('Backend Profile Error:', userData.error);
+                handleLogout(); // Clear state if token exchange fails
+            } else {
+                setUserProfile(userData);
+            }
         } catch (error) {
-            console.error('Error fetching user profile:', error);
+            console.error('Error connecting to backend for profile:', error);
         }
     };
 
@@ -281,7 +282,7 @@ export default function App() {
 
     const createPlaylist = async (artistName, artistId) => {
         if (!userProfile || !userProfile.id) {
-            alert("User profile not loaded. Please try logging in again.");
+            alert("Waiting for profile to load... please try again in a moment.");
             return;
         }
 
@@ -317,7 +318,7 @@ export default function App() {
         }
     };
 
-    // when user is logged in
+    // UI Rendering Logic
     if (accessToken && userProfile) {
         return (
             <div style={styles.mainContainer}>

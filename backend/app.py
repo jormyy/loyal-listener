@@ -94,6 +94,31 @@ def add_songs_to_playlist(user_token, playlist_id, track_ids):
 def home():
     return jsonify({"message": "Spotify API is running on AWS"})
 
+@app.route('/api/get_profile', methods=['POST'])
+def get_profile():
+    data = request.get_json()
+    auth_code = data.get('code')
+    
+    sp_oauth = SpotifyOAuth(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        redirect_uri=REDIRECT_URI,
+        scope="user-read-private user-read-email playlist-modify-public"
+    )
+
+    try:
+        # Exchange code for token
+        token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
+        access_token = token_info['access_token']
+        
+        # Use token to get profile
+        user_sp = spotipy.Spotify(auth=access_token)
+        profile = user_sp.current_user()
+        
+        return jsonify(profile)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
+
 @app.route('/api/artist_search')
 def api_artist_search():
     artist_name = request.args.get('artist_name', 'keshi')
