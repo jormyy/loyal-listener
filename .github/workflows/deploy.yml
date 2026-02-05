@@ -24,4 +24,4 @@ jobs:
             docker stop $(docker ps -q) || true
             docker rm $(docker ps -aq) || true
             docker build -t ll-app .
-            docker run -d -p 80:5000 --env-file .env ll-app
+            docker run -d -p 5000:5000 --env-file .env ll-app
