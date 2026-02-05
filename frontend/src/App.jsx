@@ -217,12 +217,18 @@ export default function App() {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         
+        // Only proceed if there's a code AND we haven't set the token yet
         if (code && !accessToken) {
-            setAccessToken(code);
+            // 1. Immediately clear the URL so a refresh doesn't trigger this again
             window.history.replaceState({}, document.title, "/"); 
+            
+            // 2. Set the token
+            setAccessToken(code);
+            
+            // 3. Fetch the profile
             fetchUserProfileFromBackend(code);
         }
-    }, [accessToken]);
+    }, []);
 
     const handleLogin = () => {
         const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
