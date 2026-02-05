@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const styles = {
     // login page styles
@@ -212,30 +212,26 @@ export default function App() {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const scopes = 'user-read-private user-read-email playlist-modify-public';
 
-    // 1. Capture Auth Code and fetch profile from BACKEND
+    const hasFetched = useRef(false);
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         
-        // Only proceed if there's a code AND we haven't set the token yet
-        if (code && !accessToken) {
-            // 1. Immediately clear the URL so a refresh doesn't trigger this again
-            window.history.replaceState({}, document.title, "/"); 
-            
-            // 2. Set the token
+        if (code && !accessToken && !hasFetched.current) {
+            hasFetched.current = true; // Lock it!
             setAccessToken(code);
-            
-            // 3. Fetch the profile
+            window.history.replaceState({}, document.title, "/"); 
             fetchUserProfileFromBackend(code);
         }
-    }, []);
+    }, [accessToken, fetchUserProfileFromBackend]);
 
-    const handleLogin = () => {
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
-        window.location.href = authUrl;
-    };
+        const handleLogin = () => {
+            const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+            window.location.href = authUrl;
+        };
 
-    const fetchUserProfileFromBackend = async (code) => {
+    const fetchUserProfileFromBackend = useCallback(async (code) => {
         try {
             const response = await fetch(`${backendUrl}/api/get_profile`, {
                 method: 'POST',
@@ -246,14 +242,14 @@ export default function App() {
             
             if (userData.error) {
                 console.error('Backend Profile Error:', userData.error);
-                handleLogout(); // Clear state if token exchange fails
+                handleLogout(); 
             } else {
                 setUserProfile(userData);
             }
         } catch (error) {
             console.error('Error connecting to backend for profile:', error);
         }
-    };
+    }, [backendUrl]);
 
     const handleLogout = () => {
         setAccessToken(null);
