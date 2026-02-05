@@ -135,7 +135,7 @@ def api_songs():
 @app.route('/api/create_playlist', methods=['POST', 'OPTIONS'])
 def api_create_playlist():
     data = request.get_json()
-    
+    print(f"DEBUG: Received data: {data}")
     if not data:
         return jsonify({"error": "JSON data required"}), 400
     
