@@ -218,22 +218,19 @@ export default function App() {
 
     // check for access token in url
     useEffect(() => {
-        const hash = window.location.hash;
-        if (hash) {
-            const token = hash.split('&')[0].split('=')[1];
-            if (token) {
-                setAccessToken(token);
-                window.location.hash = '';
-                fetchUserProfile(token);
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            setAccessToken(code);
+            window.history.replaceState({}, document.title, "/");
+            fetchUserProfile(code);
         }
     }, []);
 
     const handleLogin = () => {
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
         window.location.href = authUrl;
     };
-
     const fetchUserProfile = async (token) => {
         try {
             const response = await fetch('https://api.spotify.com/v1/me', {
