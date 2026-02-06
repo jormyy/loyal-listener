@@ -320,7 +320,7 @@ export default function App() {
         }
     };
 
-    // UI Rendering Logic
+    // UI rendering logic
     if (accessToken && userProfile) {
         return (
             <div style={styles.mainContainer}>

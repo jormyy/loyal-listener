@@ -5,24 +5,21 @@ from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 import os
 from dotenv import load_dotenv
 
-# Load variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
 
-# 1. Professional CORS Setup
-# This allows your Vercel frontend to send cookies and JSON to this AWS backend
+# allow your vercel frontend to send cookies and JSON to AWS backend
 CORS(app, 
-     supports_credentials=True, 
-     origins=["https://loyal-listener.vercel.app"],
-     allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "OPTIONS"])
+    supports_credentials=True, 
+    origins=["https://loyal-listener.vercel.app"],
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "OPTIONS"])
 
-# Environment Variables
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY")
-REDIRECT_URI = os.getenv("REDIRECT_URI") # Must be https://loyal-listener.vercel.app/callback
+REDIRECT_URI = os.getenv("REDIRECT_URI")
 
 app.config.update(
     SESSION_COOKIE_SAMESITE='None',
@@ -30,14 +27,11 @@ app.config.update(
     SECRET_KEY=SECRET_KEY
 )
 
-# Standard client for searching (doesn't need user login)
 client_credentials_manager = SpotifyClientCredentials(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET
 )
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-# --- Helper Functions ---
 
 def artist_search(artist_name="keshi"):
     try:
@@ -88,8 +82,6 @@ def add_songs_to_playlist(user_token, playlist_id, track_ids):
     except Exception as e:
         return {"error": str(e)}
 
-# --- API Routes ---
-
 @app.route('/')
 def home():
     return jsonify({"message": "Spotify API is running on AWS"})
@@ -107,12 +99,9 @@ def get_profile():
     )
 
     try:
-        # Exchange code for token
-        print(f"DEBUG: Attempting swap with Redirect URI: {REDIRECT_URI}")
         token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
         access_token = token_info['access_token']
         
-        # Use token to get profile
         user_sp = spotipy.Spotify(auth=access_token)
         profile = user_sp.current_user()
         
@@ -127,7 +116,7 @@ def api_artist_search():
 
 @app.route('/api/create_playlist', methods=['POST', 'OPTIONS'])
 def api_create_playlist():
-    # Handle Preflight
+    # handle preflight
     if request.method == 'OPTIONS':
         return '', 204
 
@@ -137,7 +126,7 @@ def api_create_playlist():
     if not data:
         return jsonify({"error": "JSON data required"}), 400
     
-    auth_code = data.get('user_token') # This is the 'code' from React
+    auth_code = data.get('user_token')
     user_id = data.get('user_id')
     artist_name = data.get('artist_name')
     artist_id = data.get('artist_id')
@@ -145,7 +134,7 @@ def api_create_playlist():
     if not all([auth_code, user_id, artist_name, artist_id]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    # 2. Token Swap: Exchange auth_code for real access_token
+    # exchange auth_code for real access_token
     sp_oauth = SpotifyOAuth(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -160,7 +149,6 @@ def api_create_playlist():
         print(f"Token swap failed: {e}")
         return jsonify({"error": "Session expired. Please log in again."}), 401
 
-    # 3. Create Playlist & Add Songs
     playlist = create_user_playlist(access_token, user_id, artist_name)
     if "error" in playlist:
         return jsonify(playlist), 500
