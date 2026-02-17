@@ -49,13 +49,16 @@ def artist_search(artist_name="keshi"):
 def get_all_artist_songs(artist_id):
     try:
         albums_result = sp.artist_albums(artist_id=artist_id, album_type="album,single", limit=50)["items"]
-        all_track_ids = []
+        tracks_by_id = {}
         for album in albums_result:
+            release_date = album["release_date"]
             tracks = sp.album_tracks(album_id=album["id"], limit=50)["items"]
-            for track in tracks:
+            for i, track in enumerate(tracks):
                 if any(artist["id"] == artist_id for artist in track["artists"]):
-                    all_track_ids.append(track["id"])
-        return list(set(all_track_ids))
+                    if track["id"] not in tracks_by_id:
+                        tracks_by_id[track["id"]] = (release_date, track["track_number"], i)
+        sorted_tracks = sorted(tracks_by_id.items(), key=lambda x: (x[1][0], x[1][1]))
+        return [track_id for track_id, _ in sorted_tracks]
     except Exception as e:
         return {"error": str(e)}
 
